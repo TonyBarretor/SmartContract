@@ -16,7 +16,26 @@
 					{
 						"indexed": true,
 						"internalType": "uint256",
-						"name": "roundNumber",
+						"name": "round",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "totalRefunded",
+						"type": "uint256"
+					}
+				],
+				"name": "RoundRefunded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "round",
 						"type": "uint256"
 					},
 					{
@@ -43,6 +62,12 @@
 						"internalType": "uint256",
 						"name": "ticketCount",
 						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "round",
+						"type": "uint256"
 					}
 				],
 				"name": "TicketPurchased",
@@ -53,23 +78,80 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
-						"name": "winner",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "round",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "winners",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256[]",
+						"name": "prizes",
+						"type": "uint256[]"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "prize",
+						"name": "poolAfterFee",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "feePaid",
 						"type": "uint256"
 					}
 				],
-				"name": "WinnerSelected",
+				"name": "WinnersSelected",
 				"type": "event"
 			},
 			{
 				"stateMutability": "payable",
 				"type": "fallback"
+			},
+			{
+				"inputs": [],
+				"name": "HOUSE_FEE_BPS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "MAX_TICKETS_PER_ADDR",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "MIN_UNIQUE_PLAYERS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -151,11 +233,140 @@
 			},
 			{
 				"inputs": [],
+				"name": "getPrizePoolReadable",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getRoundSummary",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "_round",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "_active",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_timeLeftSec",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_tickets",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_unique",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_poolWei",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTicketPriceReadable",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getTimeRemaining",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTimeRemainingReadable",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getUniquePlayerCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "history",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "round",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "refunded",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "prizePoolOrRefundTotal",
 						"type": "uint256"
 					}
 				],
@@ -177,7 +388,26 @@
 			},
 			{
 				"inputs": [],
-				"name": "lastPrizeAmount",
+				"name": "lastPrizePool",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lastPrizes",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -190,7 +420,26 @@
 			},
 			{
 				"inputs": [],
-				"name": "lastWinner",
+				"name": "lastRoundRefunded",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lastWinners",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -280,45 +529,42 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {
-				"buyTickets(uint256)": {
-					"params": {
-						"ticketCount": "Number of tickets to purchase (>=1). Requirements:  - Round must be active.  - Exact ETH must be sent: ticketCount * TICKET_PRICE.  - Adds one entry per ticket (duplicates allowed to reflect multiple tickets)."
-					}
-				}
-			},
-			"title": "DecentralizedLottery",
+			"methods": {},
+			"title": "DecentralizedLottery (+ bonus features)",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
 			"methods": {
 				"buyTickets(uint256)": {
-					"notice": "Buy one or more tickets for the current round."
+					"notice": "Buy N tickets for the active round. Must send exact ETH = N * TICKET_PRICE."
 				},
 				"getPlayerCount()": {
-					"notice": "Number of ticket entries currently in the pool."
+					"notice": "total entries (tickets) for current round"
 				},
-				"getPlayers()": {
-					"notice": "Returns the entire players array (useful for debugging/demo)."
+				"getPrizePoolReadable()": {
+					"notice": "\"<x.yyyy> ETH\""
 				},
-				"getPrizePool()": {
-					"notice": "Current ETH prize pool (all ETH held by this contract)."
+				"getRoundSummary()": {
+					"notice": "Compact round snapshot for UIs"
 				},
-				"getTimeRemaining()": {
-					"notice": "Seconds remaining in the active round (0 if none/ended)."
+				"getTicketPriceReadable()": {
+					"notice": "\"0.01 ETH\""
 				},
-				"isRoundActive()": {
-					"notice": "True if a round is currently active (deadline exists & not passed)."
+				"getTimeRemainingReadable()": {
+					"notice": "\"M min S sec\""
+				},
+				"getUniquePlayerCount()": {
+					"notice": "unique addresses that joined this round"
 				},
 				"selectWinner()": {
-					"notice": "Select the round winner and pay out the full prize pool. Anyone can call this AFTER the round has ended. Uses CEI pattern for safety:  1) CHECKS: round ended, players exist.  2) EFFECTS: determine winner, record state, reset roundEndTime & players.  3) INTERACTIONS: transfer prize to winner via call."
+					"notice": "Settle the round:  - if not enough unique players -> refund all tickets  - else -> pay house fee then split pool among up to 3 unique winners  Anyone can call after round end."
 				},
 				"startNewRound()": {
-					"notice": "Start a new lottery round. Only callable when no active round. - Sets the deadline. - Clears previous players. - Increments the round counter."
+					"notice": "Start a new lottery round. Only owner. Round must be inactive."
 				}
 			},
-			"notice": "Simple time-boxed lottery:  - Owner starts a round (fixed duration).  - Players buy tickets at a fixed price (can buy multiple per txn).  - After the round ends, anyone can call selectWinner().  - Winner receives the entire prize pool. SECURITY:  - Access control on round start (onlyOwner).  - Checks-Effects-Interactions (CEI) on prize payout.  - Rejects direct ETH (receive/fallback) to avoid orphaned funds. NOTE (randomness):  - Uses simple on-chain pseudo-randomness for education purposes only.  - Not suitable for high-stakes/production deployments.",
+			"notice": "Time-boxed lottery:  - Owner starts a round (fixed duration).  - Players buy tickets at fixed price (ETH).  - After the end, anyone may settle:      * if enough unique players -> pick up to 3 unique winners & pay (minus fee)      * else -> automatically refund all tickets  SECURITY   - onlyOwner can start a round   - CEI pattern for all transfers   - simple nonReentrant guard on settlement/refunds  RANDOMNESS   - simple on-chain pseudo-randomness (OK for class/test; NOT for real-money prod)",
 			"version": 1
 		}
 	},
@@ -339,11 +585,11 @@
 	},
 	"sources": {
 		"contracts/DecentralizedLottery.sol": {
-			"keccak256": "0x2feddde5586bb48111eab9202038472e1821b53b32f84ee9d1ebdbec3ddc988e",
+			"keccak256": "0xb88c231942830f85512d9893ec6686ef52fe5d56920c4d30fe5a0d96cc84837a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ca852727225a50643d9f8ecdb7fdcc296680bcb4833584e7c76d6fa91be867da",
-				"dweb:/ipfs/QmehybXQ5sqXNtGsQGk9imFjH7kPjSw1XZszQDNjLywcTm"
+				"bzz-raw://0b00a0c035e323d39736d279e8eb71da711d48290ed16034a17b4e6bf65e2021",
+				"dweb:/ipfs/QmPVVmtHhXrhznG54Kyt5Da7eCAyVsbJa2Zxn1GjVFFT2p"
 			]
 		}
 	},
